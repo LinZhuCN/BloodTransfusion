@@ -1,20 +1,19 @@
 /// 一次就诊
-Class ODS.Encounter Extends (%Persistent, %XML.Adaptor)
+Class ODS.Encounter Extends (%Persistent, ODS.DT.AbstractResource)
 {
 
 /// Identifier(s) by which this encounter is known.
 Property Identifier As ODS.DT.Identifier(XMLNAME = "identifier", XMLPROJECTION = "ELEMENT");
 
-/// 就诊状态 planned | arrived | triaged | in-progress | onleave | finished | cancelled +.
-Property Status As ODS.DT.Coding(XMLNAME = "status", XMLPROJECTION = "ELEMENT") [ Required ];
+// Property Status As ODS.DT.Coding(XMLNAME = "status", XMLPROJECTION = "ELEMENT") [ Required ];
 
+/// 就诊状态 planned | arrived | triaged | in-progress | onleave | finished | cancelled +.
 /// The status history permits the encounter resource to contain the status history without needing to read through the historical versions of the resource, or even have the server store them.
 /// 就诊状态历史
 Property StatusHistory As list Of ODS.DT.StatusHistory(XMLNAME = "statusHistory", XMLPROJECTION = "ELEMENT");
 
 /*/// 上次就诊状态，计算属性
 Property PreviousStatus As ODS.DT.Coding [ Calculated ];*/
-
 /// 就诊类型 inpatient | outpatient | ambulatory | emergency +.
 Property Class As ODS.DT.Coding(XMLNAME = "class", XMLPROJECTION = "ELEMENT");
 
@@ -27,7 +26,7 @@ Property Type As list Of ODS.DT.Coding(XMLNAME = "type", XMLPROJECTION = "ELEMEN
 Property Priority As ODS.DT.Coding(XMLNAME = "priority", XMLPROJECTION = "ELEMENT");
 
 /// The patient ro group present at the encounter.
-Relationship Subject As ODS.Patient(XMLNAME = "subject", XMLPROJECTION = "ELEMENT", XMLREFERENCE="ID") [ Cardinality = one, Inverse = Encounters ];
+Relationship Subject As ODS.Patient(XMLNAME = "subject", XMLPROJECTION = "ELEMENT", XMLREFERENCE = "ID") [ Cardinality = one, Inverse = Encounters ];
 
 /// Where a specific encounter should be classified as a part of a specific episode(s) of care this field should be used. This association can facilitate grouping of related encounters together for a specific purpose, such as government reporting, issue tracking, association via a common problem.  The association is recorded on the encounter as these are typically created after the episode of care, and grouped on entry rather than editing the episode of care to append another encounter to it (the episode of care could span years).
 /// Property episodeOfCare As list Of HS.FHIR.vSTU3.Model.Base.Reference(XMLNAME = "episodeOfCare", XMLPROJECTION = "ELEMENT");
@@ -59,18 +58,16 @@ Property Location As list Of ODS.Encounter.Location(XMLNAME = "location", XMLPRO
 /// Extension added
 Property Extension As ODS.Encounter.Extension(XMLNAME = "extension", XMLPROJECTION = "ELEMENT");
 
-
 /// Another Encounter of which this encounter is a part of (administratively or in time).
 /// Property partOf As HS.FHIR.vSTU3.Model.Base.Reference(XMLNAME = "partOf", XMLPROJECTION = "ELEMENT");
 Index SubjectIndex On Subject;
 
-Relationship ServiceRequests As ODS.ServiceRequest (XMLNAME = "servicerequest", XMLPROJECTION = "ELEMENT")[ Cardinality = children, Inverse = Encounter ];
+Relationship ServiceRequests As ODS.ServiceRequest(XMLNAME = "servicerequest", XMLPROJECTION = "ELEMENT") [ Cardinality = children, Inverse = Encounter ];
 
-Relationship Observations As ODS.Observation (XMLNAME = "observation", XMLPROJECTION = "ELEMENT" )[ Cardinality = many, Inverse = Encounter ];
+Relationship Observations As ODS.Observation(XMLNAME = "observation", XMLPROJECTION = "ELEMENT") [ Cardinality = many, Inverse = Encounter ];
 
 /// The list of diagnosis relevant to this encounter.
 Relationship Diagnoses As ODS.Diagnosis(XMLNAME = "diagnosis", XMLPROJECTION = "ELEMENT") [ Cardinality = many, Inverse = Encounter ];
-
 
 Storage Default
 {
@@ -122,6 +119,9 @@ Storage Default
 </Value>
 <Value name="16">
 <Value>Extension</Value>
+</Value>
+<Value name="17">
+<Value>ResourceId</Value>
 </Value>
 </Data>
 <DataLocation>^ODS.EncounterD</DataLocation>

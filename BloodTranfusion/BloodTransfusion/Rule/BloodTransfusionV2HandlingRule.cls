@@ -12,7 +12,7 @@ XData RuleDefinition [ XMLNamespace = "http://www.intersystems.com/rule" ]
 <constraint name="docCategory" value="2.5.1"></constraint>
 <constraint name="docName" value="OMB_O27"></constraint>
 <when condition="1">
-<send transform="BloodTransfusion.DT.V251.OMBO27ToHIPDTL" target="ToHIP_REST接口"></send>
+<send transform="BloodTransfusion.DT.V251.OMBO27ToHIPDTL" target="输血申请处理流程"></send>
 <return></return>
 </when>
 </rule>

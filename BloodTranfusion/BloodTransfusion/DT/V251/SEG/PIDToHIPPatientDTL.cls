@@ -10,6 +10,7 @@ Parameter TREATEMPTYREPEATINGFIELDASNULL = 0;
 XData DTL [ XMLNamespace = "http://www.intersystems.com/dtl" ]
 {
 <transform sourceClass='EnsLib.HL7.Segment' targetClass='ODS.Patient' sourceDocType='2.5.1:PID' create='new' language='objectscript' >
+<assign value='source.{PatientIdentifierList().IDNumber}' property='target.ResourceId' action='set' />
 <foreach property='source.{PatientIdentifierList()}' key='k1' >
 <assign value='source.{PatientIdentifierList(k1).IDNumber}' property='target.Identifier.(k1).Value' action='set' />
 <assign value='source.{PatientIdentifierList(k1).IdentifierTypeCode}' property='target.Identifier.(k1).Type.Code' action='set' />

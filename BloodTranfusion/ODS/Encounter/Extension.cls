@@ -1,7 +1,8 @@
 Class ODS.Encounter.Extension Extends (%SerialObject, %XML.Adaptor) [ ProcedureBlock ]
 {
-	
-	Property VisitIndicator As %String(XMLNAME = "visitindicator", XMLPROJECTION = "ELEMENT");
+
+Property VisitIndicator As %String(XMLNAME = "visitindicator", XMLPROJECTION = "ELEMENT");
+
 Storage Default
 {
 <Data name="ExtensionState">

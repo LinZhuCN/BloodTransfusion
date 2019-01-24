@@ -7,42 +7,79 @@ Property Adapter As EnsLib.HTTP.OutboundAdapter;
 
 Parameter INVOCATION = "Queue";
 
-Method SendBloodTransfusionOrder(pInput As HIP.Message.CreateServiceRequest, Output pOutput As HIP.Message.HIPTransactionResponse) As %Status
+Method SendHIPRESTRequest(pRequest As HIP.Message.HIPRESTRequest, Output pResponse As HIP.Message.HIPRESTResponse) As %Status
 {
 	try {
-		
-		// Execute the call
-	  set tURL = ..Adapter.URL
-	  
-	  set tStream = ""
-	  do ##class(%ZEN.Auxiliary.jsonProvider).%WriteJSONStreamFromObject(.tStream,pInput,,,,"aeloqtw")
-	  set reqStr = tStream.Read()
-	  
-	  w reqStr
-	  
-      Set tSC= ..Adapter.PostURL(tURL,.tHttpResponse, , reqStr)
-	  // Return the response
-      If $$$ISERR(tSC)&&$IsObject(tHttpResponse)&&$IsObject(tHttpResponse.Data)&&tHttpResponse.Data.Size {
-         Set tSC=$$$ERROR($$$EnsErrGeneral,$$$StatusDisplayString(tSC)_":"_tHttpResponse.Data.Read())
-      }
-      Quit:$$$ISERR(tSC)
-      If $IsObject(tHttpResponse) {
-         // Instantiate the response object
-         set pOutput = ##class(HIP.Message.HIPTransactionResponse).%New()
-         // Convert JSON into a Proxy Cache Object
-         set tSC = ..JSONStreamToObject(tHttpResponse.Data, .pOutput)
-       }
+	  // Get resouce specific url 
+	  set tURL = ..Adapter.URL_"/"_pRequest.Type
+	  //Invoke handlers to perform
+	  set tSC = $CASE(pRequest.Operation,
+		"Create":..OnCreate(tURL,pRequest,.pResponse),
+		"Delete":..OnDelete(pRequest,.pResponse),
+		"Update":..OnUpdate(patInstance,.pResponse),
+		"Search":..OnSearch(pRequest,.pResponse),
+		"Read":..OnRead(tURL,pRequest,.pResponse)) 
    	}catch{
        Set tSC=$$$SystemError
    }
    Quit tSC
 }
 
+Method OnCreate(tURL As %String, pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+	Set tSC= ..Adapter.PostURL(tURL,.tHttpResponse, , pRequest.Payload)
+	  // Return the response
+      If $$$ISERR(tSC)&&$IsObject(tHttpResponse)&&$IsObject(tHttpResponse.Data)&&tHttpResponse.Data.Size {
+         Set tSC=$$$ERROR($$$EnsErrGeneral,$$$StatusDisplayString(tSC)_":"_tHttpResponse.Data.Read())
+      }
+      If $IsObject(tHttpResponse) {
+         // Instantiate the response object
+         Set pResponse = ##class(HIP.Message.HIPRESTResponse).%New()
+         // Convert JSON into a Proxy Cache Object 
+         Set tSC = ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(tHttpResponse.Data, "HIP.Message.HIPRESTResponse",.pResponse)
+       }
+      Quit tSC
+}
+
+Method OnRead(tURL As %String, pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+	set callUrl = tURL_"/"_pRequest.Id
+	
+	Set tSC= ..Adapter.GetURL(callUrl,.tHttpResponse)
+	If $$$ISERR(tSC)&&$IsObject(tHttpResponse)&&$IsObject(tHttpResponse.Data)&&tHttpResponse.Data.Size {
+         Set tSC=$$$ERROR($$$EnsErrGeneral,$$$StatusDisplayString(tSC)_":"_tHttpResponse.Data.Read())
+    }
+    set pResponse = ##class(HIP.Message.HIPRESTResponse).%New()
+    If $IsObject(tHttpResponse) {
+         set str = tHttpResponse.Data
+         do str.Rewind()
+         // Convert JSON into a Proxy Cache Object
+         set tSC = ##class(%ZEN.Auxiliary.jsonProvider).%ParseJSON(str.Read(),"HIP.Message.HIPRESTResponse",.pResponse)
+         //set tSC = ..JSONStreamToObject(tHttpResponse.Data, .pResponse,"HIP.Message.HIPRESTResponse")
+    }else{
+    		set str = tHttpResponse.Data
+    		set tSC = ##class(%ZEN.Auxiliary.jsonProvider).%ParseJSON(str,"HIP.Message.HIPRESTResponse",.pResponse)
+    }
+	Quit tSC
+}
+
+Method OnDelete(pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+	Quit $$$ERROR($$$NotImplemented)
+}
+
+Method OnUpdate(pInstance As %Persistent, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+	Quit $$$ERROR($$$NotImplemented)
+}
+
+Method OnSearch(pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+	Quit $$$ERROR($$$NotImplemented)
+}
+
+
+
 XData MessageMap
 {
 <MapItems>
-    <MapItem MessageType="HIP.Message.HIP.Message.ServiceRequest">
-        <Method>SendBloodTransfusionOrder</Method>
+    <MapItem MessageType="HIP.Message.HIPRESTRequest">
+        <Method>SendHIPRESTRequest</Method>
     </MapItem>
 </MapItems>
 }
