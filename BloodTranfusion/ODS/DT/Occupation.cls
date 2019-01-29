@@ -1,5 +1,5 @@
 /// 职业
-Class ODS.DT.Occupation Extends (%SerialObject, %XML.Adaptor)
+Class ODS.DT.Occupation Extends ODS.DT.EmbeddedDataType
 {
 
 /// DE02.01.050.00	职称级别代码	个体职称所属级别在特定分类中的代码	S2	N1	1.高级职称 2.中级职称 3.初级职称	DE02.01.050.00

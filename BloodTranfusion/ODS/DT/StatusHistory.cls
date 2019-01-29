@@ -1,4 +1,4 @@
-Class ODS.DT.StatusHistory Extends (%SerialObject, %XML.Adaptor)
+Class ODS.DT.StatusHistory Extends ODS.DT.EmbeddedDataType
 {
 
 /// 记录时间戳/序号.

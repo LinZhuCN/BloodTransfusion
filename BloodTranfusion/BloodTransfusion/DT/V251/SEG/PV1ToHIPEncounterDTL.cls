@@ -24,6 +24,7 @@ XData DTL [ XMLNamespace = "http://www.intersystems.com/dtl" ]
 <assign value='source.{PendingLocation.PointofCare}' property='target.Location.(1).Location.Identifier.(1).Value' action='set' />
 <assign value='source.{AdmissionType}' property='target.Type.(1).Code' action='set' />
 <assign value='source.{VisitNumber.IDNumber}' property='target.Identifier.Value' action='set' />
+<assign value='source.{VisitNumber.IDNumber}' property='target.ResourceId' action='set' />
 <assign value='source.{OtherHealthcareProvider().IDNumber}' property='target.Participant.(1).Identifier.(1).Value' action='set' />
 <assign value='source.{OtherHealthcareProvider().GivenName}' property='target.Participant.(1).Name.Text' action='set' />
 <assign value='source.{VisitIndicator}' property='target.Extension.VisitIndicator' action='set' />

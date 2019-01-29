@@ -13,7 +13,7 @@
 ///    </coding>
 ///    <text value="general headache" />
 ///  </concept>
-Class ODS.DT.CodeableConcept Extends (%SerialObject, %XML.Adaptor)
+Class ODS.DT.CodeableConcept Extends ODS.DT.EmbeddedDataType
 {
 
 /// A reference to a code defined by a terminology system.

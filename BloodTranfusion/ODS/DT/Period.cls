@@ -1,4 +1,4 @@
-Class ODS.DT.Period Extends (%SerialObject, %XML.Adaptor)
+Class ODS.DT.Period Extends ODS.DT.EmbeddedDataType
 {
 
 /// The start of the period. The boundary is inclusive.

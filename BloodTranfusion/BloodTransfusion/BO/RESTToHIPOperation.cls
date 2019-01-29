@@ -16,7 +16,7 @@ Method SendHIPRESTRequest(pRequest As HIP.Message.HIPRESTRequest, Output pRespon
 	  set tSC = $CASE(pRequest.Operation,
 		"Create":..OnCreate(tURL,pRequest,.pResponse),
 		"Delete":..OnDelete(pRequest,.pResponse),
-		"Update":..OnUpdate(patInstance,.pResponse),
+		"Update":..OnUpdate(pRequest,.pResponse),
 		"Search":..OnSearch(pRequest,.pResponse),
 		"Read":..OnRead(tURL,pRequest,.pResponse)) 
    	}catch{
@@ -65,7 +65,7 @@ Method OnDelete(pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.M
 	Quit $$$ERROR($$$NotImplemented)
 }
 
-Method OnUpdate(pInstance As %Persistent, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+Method OnUpdate(pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
 	Quit $$$ERROR($$$NotImplemented)
 }
 

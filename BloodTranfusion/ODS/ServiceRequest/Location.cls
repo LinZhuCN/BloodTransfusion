@@ -1,6 +1,6 @@
 /// 记录患者医嘱的来源科室
 /// An interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
-Class ODS.ServiceRequest.Location Extends (%SerialObject, %XML.Adaptor) [ ProcedureBlock ]
+Class ODS.ServiceRequest.Location Extends ODS.DT.EmbeddedDataType
 {
 
 Parameter XMLNAME = "ServiceRequest.Location";
@@ -9,9 +9,9 @@ Parameter XMLSEQUENCE = 1;
 
 Parameter XMLTYPE = "ServiceRequest.Location";
 
-/// The location where the encounter takes place.本次所在病区,例如手术室、ICU、心内一病区.
-//Property Location As ODS.Location(XMLNAME = "location", XMLPROJECTION = "ELEMENT") [ Required ];
+// Property Location As ODS.Location(XMLNAME = "location", XMLPROJECTION = "ELEMENT") [ Required ];
 
+/// The location where the encounter takes place.本次所在病区,例如手术室、ICU、心内一病区.
 /// The status of the participants' presence at the specified location during the period specified. If the participant is is no longer at the location, then the period will have an end date/time.
 Property Status As ODS.DT.Coding(XMLNAME = "status", XMLPROJECTION = "ELEMENT");
 
@@ -39,13 +39,13 @@ Storage Default
 {
 <Data name="LocationState">
 <Value name="1">
-<Value>Location</Value>
-</Value>
-<Value name="2">
 <Value>Status</Value>
 </Value>
-<Value name="3">
+<Value name="2">
 <Value>Period</Value>
+</Value>
+<Value name="3">
+<Value>Branch</Value>
 </Value>
 <Value name="4">
 <Value>Department</Value>
@@ -58,9 +58,6 @@ Storage Default
 </Value>
 <Value name="7">
 <Value>Bed</Value>
-</Value>
-<Value name="8">
-<Value>Branch</Value>
 </Value>
 </Data>
 <State>LocationState</State>

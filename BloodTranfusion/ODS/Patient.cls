@@ -1,7 +1,11 @@
 /// 患者
-Class ODS.Patient Extends (%Persistent, ODS.DT.AbstractResource)
+Class ODS.Patient Extends ODS.DT.AbstractResource
 {
 
+/// If the resource need a univers unique and required id, overide ResourceId as required
+Property ResourceId As %String(XMLNAME = "ResourceId", XMLPROJECTION = "ELEMENT") [ Required ];
+
+/// Index ResourceIdIdx On ResourceId [ Unique ];
 Property Identifier As list Of ODS.DT.Identifier(XMLNAME = "identifier", XMLPROJECTION = "ELEMENT");
 
 Property Active As %Boolean(XMLNAME = "active", XMLPROJECTION = "ELEMENT");
@@ -53,8 +57,38 @@ Property MultipleBirthInteger As %Integer(XMLNAME = "multipleBirthInteger", XMLP
 Property VIP As list Of ODS.DT.VIP(XMLNAME = "vip", XMLPROJECTION = "ELEMENT");
 
 /// 就诊
-Relationship Encounters As ODS.Encounter(XMLNAME = "multipleBirthInteger", XMLPROJECTION = "ELEMENT") [ Cardinality = many, Inverse = Subject ];
+Property Encounters As list Of ODS.Encounter(XMLNAME = "multipleBirthInteger", XMLPROJECTION = "ELEMENT");
 
+// Property photo As list Of HS.FHIR.vSTU3.Model.Base.Attachment(XMLNAME = "photo", XMLPROJECTION = "ELEMENT");
+
+// Property contact As list Of HS.FHIR.vSTU3.Model.Resource.Patient.Contact(XMLNAME = "contact", XMLPROJECTION = "ELEMENT");
+
+// Property animal As HS.FHIR.vSTU3.Model.Resource.Patient.Animal(XMLNAME = "animal", XMLPROJECTION = "ELEMENT");
+
+// Property communication As list Of HS.FHIR.vSTU3.Model.Resource.Patient.Communication(XMLNAME = "communication", XMLPROJECTION = "ELEMENT");
+
+// Property generalPractitioner As list Of HS.FHIR.vSTU3.Model.Base.Reference(XMLNAME = "generalPractitioner", XMLPROJECTION = "ELEMENT");
+
+// Property managingOrganization As HS.FHIR.vSTU3.Model.Base.Reference(XMLNAME = "managingOrganization", XMLPROJECTION = "ELEMENT");
+
+// Property link As list Of HS.FHIR.vSTU3.Model.Resource.Patient.Link(XMLNAME = "link", XMLPROJECTION = "ELEMENT");
+
+/// This callback method is invoked by the <METHOD>%Save</METHOD> method to 
+/// provide notification that the object is being saved. It is called before 
+/// any data is written to disk.
+/// 
+/// <P><VAR>insert</VAR> will be set to 1 if this object is being saved for the first time.
+/// 
+/// <P>If this method returns an error then the call to <METHOD>%Save</METHOD> will fail.
+Method %OnBeforeSave(insert As %Boolean) As %Status [ Private, ServerOnly = 1 ]
+{
+	if (insert){
+		if "" = ..ResourceId{
+			set ..ResourceId = $SYSTEM.Util.CreateGUID()
+		}	
+	}
+	Quit $$$OK
+}
 
 Storage Default
 {
@@ -63,58 +97,61 @@ Storage Default
 <Value>%%CLASSNAME</Value>
 </Value>
 <Value name="2">
-<Value>Identifier</Value>
+<Value>ResourceId</Value>
 </Value>
 <Value name="3">
-<Value>Active</Value>
+<Value>Identifier</Value>
 </Value>
 <Value name="4">
-<Value>Name</Value>
+<Value>Active</Value>
 </Value>
 <Value name="5">
-<Value>Gender</Value>
+<Value>Name</Value>
 </Value>
 <Value name="6">
-<Value>BirthDate</Value>
+<Value>Gender</Value>
 </Value>
 <Value name="7">
-<Value>BirthTime</Value>
+<Value>BirthDate</Value>
 </Value>
 <Value name="8">
-<Value>Deceased</Value>
+<Value>BirthTime</Value>
 </Value>
 <Value name="9">
-<Value>DeceasedPlaceType</Value>
+<Value>Deceased</Value>
 </Value>
 <Value name="10">
-<Value>DeceasedDateTime</Value>
+<Value>DeceasedPlaceType</Value>
 </Value>
 <Value name="11">
-<Value>Address</Value>
+<Value>DeceasedDateTime</Value>
 </Value>
 <Value name="12">
-<Value>MaritalStatus</Value>
+<Value>Address</Value>
 </Value>
 <Value name="13">
-<Value>Nationality</Value>
+<Value>MaritalStatus</Value>
 </Value>
 <Value name="14">
-<Value>Ethnic</Value>
+<Value>Nationality</Value>
 </Value>
 <Value name="15">
-<Value>Occupation</Value>
+<Value>Ethnic</Value>
 </Value>
 <Value name="16">
-<Value>MultipleBirthBoolean</Value>
+<Value>Occupation</Value>
 </Value>
 <Value name="17">
-<Value>MultipleBirthInteger</Value>
+<Value>MultipleBirthBoolean</Value>
 </Value>
 <Value name="18">
-<Value>VIP</Value>
+<Value>MultipleBirthInteger</Value>
 </Value>
 <Value name="19">
-<Value>ResourceId</Value>
+<Value>VIP</Value>
+</Value>
+<Value name="20">
+<Value>Encounters</Value>
 </Value>
 </Data>
 <DataLocation>^ODS.PatientD</DataLocation>

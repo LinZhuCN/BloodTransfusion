@@ -1,6 +1,6 @@
 /// 记录患者在一次就诊期间在病区间的移动
 /// An interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
-Class ODS.Encounter.Location Extends (%SerialObject, %XML.Adaptor) [ ProcedureBlock ]
+Class ODS.Encounter.Location Extends ODS.DT.EmbeddedDataType
 {
 
 Parameter XMLNAME = "Encounter.Location";

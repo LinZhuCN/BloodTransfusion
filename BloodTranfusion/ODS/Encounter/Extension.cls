@@ -1,4 +1,4 @@
-Class ODS.Encounter.Extension Extends (%SerialObject, %XML.Adaptor) [ ProcedureBlock ]
+Class ODS.Encounter.Extension Extends ODS.DT.EmbeddedDataType
 {
 
 Property VisitIndicator As %String(XMLNAME = "visitindicator", XMLPROJECTION = "ELEMENT");

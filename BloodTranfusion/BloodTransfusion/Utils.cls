@@ -1,5 +1,8 @@
 Class BloodTransfusion.Utils Extends %RegisteredObject
 {
-	ClassMethod getJsonStreamFromObj() as %Status{
-	}
+
+ClassMethod getJsonStreamFromObj() As %Status
+{
+}
+
 }
