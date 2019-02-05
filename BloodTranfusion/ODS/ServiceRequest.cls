@@ -6,6 +6,9 @@ Parameter XMLNAME = "ServiceRequest";
 
 Parameter XMLSEQUENCE = 1;
 
+/// If the resource need a univers unique and required id, overide ResourceId as required
+Property ResourceId As %String(XMLNAME = "ResourceId", XMLPROJECTION = "ELEMENT") [ Required ];
+
 /// Identifiers assigned to this order instance by the orderer and/or the receiver and/or order fulfiller.
 /// 医嘱号
 Property Identifier As ODS.DT.Identifier(XMLNAME = "identifier", XMLPROJECTION = "ELEMENT");
@@ -26,12 +29,12 @@ Property Requisition As ODS.DT.Identifier(XMLNAME = "requisition", XMLPROJECTION
 /// 医嘱状态
 Property Status As ODS.DT.Coding(XMLNAME = "status", XMLPROJECTION = "ELEMENT") [ Required ];
 
-/// 医嘱状态历史
-Property StatusHistory As list Of ODS.DT.StatusHistory(XMLNAME = "statusHistory", XMLPROJECTION = "ELEMENT");
+// Property StatusHistory As list Of ODS.DT.StatusHistory(XMLNAME = "statusHistory", XMLPROJECTION = "ELEMENT");
 
 /*
 /// 上次医嘱状态，计算属性
 Property PreviousStatus As ODS.DT.Coding [ Calculated ];*/
+/// 医嘱状态历史
 /// Whether the request is a proposal, plan, an original order or a reflex order.
 Property Intent As ODS.DT.Coding(XMLNAME = "intent", XMLPROJECTION = "ELEMENT") [ Required ];
 
@@ -55,7 +58,7 @@ Property QuantityQuantity As ODS.DT.Quantity(XMLNAME = "quantityQuantity", XMLPR
 
 /// On whom or what the procedure or diagnostic is to be performed. This is usually a human patient, but can also be requested on animals, groups of humans or animals, devices such as dialysis machines, or even locations (typically for environmental scans).
 /// 医嘱目标患者
-Property Subject As ODS.Patient(XMLNAME = "subject", XMLPROJECTION = "ELEMENT") [ Required ];
+Property Subject As ODS.Patient(XMLNAME = "subject", XMLPROJECTION = "ELEMENT");
 
 /// An encounter or episode of care that provides additional information about the healthcare context in which this request is made.
 /// 就诊
@@ -99,7 +102,7 @@ Property BodySite As list Of ODS.DT.Coding(XMLNAME = "bodySite", XMLPROJECTION =
 
 /// Any other notes and comments made about the service request. For example, letting provider know that "patient hates needles" or other provider instructions.
 /// 医嘱说明
-Property Note As list Of %String(XMLNAME = "note", XMLPROJECTION = "ELEMENT");
+Property Notes As list Of ODS.ServiceRequest.Note(XMLNAME = "notes", XMLPROJECTION = "ELEMENT");
 
 /// Extension added
 Property Extension As ODS.ServiceRequest.Extension(XMLNAME = "extension", XMLPROJECTION = "ELEMENT");
@@ -131,63 +134,60 @@ Storage Default
 <Value>Status</Value>
 </Value>
 <Value name="7">
-<Value>StatusHistory</Value>
-</Value>
-<Value name="8">
 <Value>Intent</Value>
 </Value>
-<Value name="9">
+<Value name="8">
 <Value>Priority</Value>
 </Value>
-<Value name="10">
+<Value name="9">
 <Value>DoNotPerform</Value>
 </Value>
-<Value name="11">
+<Value name="10">
 <Value>Category</Value>
 </Value>
-<Value name="12">
+<Value name="11">
 <Value>Code</Value>
 </Value>
-<Value name="13">
+<Value name="12">
 <Value>QuantityQuantity</Value>
 </Value>
-<Value name="14">
+<Value name="13">
 <Value>Subject</Value>
 </Value>
-<Value name="15">
+<Value name="14">
 <Value>Encounter</Value>
 </Value>
-<Value name="16">
+<Value name="15">
 <Value>OccurrenceDateTime</Value>
 </Value>
-<Value name="17">
+<Value name="16">
 <Value>OccurrencePeriod</Value>
 </Value>
-<Value name="18">
+<Value name="17">
 <Value>AuthoredOn</Value>
 </Value>
-<Value name="19">
+<Value name="18">
 <Value>Requester</Value>
 </Value>
-<Value name="20">
+<Value name="19">
 <Value>PerformerType</Value>
 </Value>
-<Value name="21">
+<Value name="20">
 <Value>Performer</Value>
 </Value>
-<Value name="22">
+<Value name="21">
 <Value>ReasonCode</Value>
 </Value>
-<Value name="23">
+<Value name="22">
 <Value>BodySite</Value>
 </Value>
-<Value name="24">
-<Value>Note</Value>
+<Value name="23">
+<Value>Notes</Value>
 </Value>
-<Value name="25">
+<Value name="24">
 <Value>Extension</Value>
 </Value>
-<Value name="26">
+<Value name="25">
 <Value>Location</Value>
 </Value>
 </Data>

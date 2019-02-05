@@ -25,13 +25,14 @@ Method SendHIPRESTRequest(pRequest As HIP.Message.HIPRESTRequest, Output pRespon
    Quit tSC
 }
 
-Method OnCreate(tURL As %String, pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+Method OnCreate(tURL As %String, pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status
+{
 	Set tSC= ..Adapter.PostURL(tURL,.tHttpResponse, , pRequest.Payload)
 	  // Return the response
-      If $$$ISERR(tSC)&&$IsObject(tHttpResponse)&&$IsObject(tHttpResponse.Data)&&tHttpResponse.Data.Size {
+      /*If $$$ISERR(tSC)&&$IsObject(tHttpResponse)&&$IsObject(tHttpResponse.Data)&&tHttpResponse.Data.Size {
          Set tSC=$$$ERROR($$$EnsErrGeneral,$$$StatusDisplayString(tSC)_":"_tHttpResponse.Data.Read())
-      }
-      If $IsObject(tHttpResponse) {
+      }*/
+      If ($IsObject(tHttpResponse)&&tHttpResponse.Data.Size) {
          // Instantiate the response object
          Set pResponse = ##class(HIP.Message.HIPRESTResponse).%New()
          // Convert JSON into a Proxy Cache Object 
@@ -40,15 +41,17 @@ Method OnCreate(tURL As %String, pRequest As HIP.Message.HIPRESTRequest, ByRef p
       Quit tSC
 }
 
-Method OnRead(tURL As %String, pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+Method OnRead(tURL As %String, pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status
+{
 	set callUrl = tURL_"/"_pRequest.Id
 	
 	Set tSC= ..Adapter.GetURL(callUrl,.tHttpResponse)
-	If $$$ISERR(tSC)&&$IsObject(tHttpResponse)&&$IsObject(tHttpResponse.Data)&&tHttpResponse.Data.Size {
+	/*If $$$ISERR(tSC)&&$IsObject(tHttpResponse)&&$IsObject(tHttpResponse.Data)&&tHttpResponse.Data.Size {
+		 
          Set tSC=$$$ERROR($$$EnsErrGeneral,$$$StatusDisplayString(tSC)_":"_tHttpResponse.Data.Read())
-    }
+    }*/
     set pResponse = ##class(HIP.Message.HIPRESTResponse).%New()
-    If $IsObject(tHttpResponse) {
+    If ($IsObject(tHttpResponse)&&tHttpResponse.Data.Size) {
          set str = tHttpResponse.Data
          do str.Rewind()
          // Convert JSON into a Proxy Cache Object
@@ -61,19 +64,20 @@ Method OnRead(tURL As %String, pRequest As HIP.Message.HIPRESTRequest, ByRef pRe
 	Quit tSC
 }
 
-Method OnDelete(pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+Method OnDelete(pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status
+{
 	Quit $$$ERROR($$$NotImplemented)
 }
 
-Method OnUpdate(pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+Method OnUpdate(pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status
+{
 	Quit $$$ERROR($$$NotImplemented)
 }
 
-Method OnSearch(pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status{
+Method OnSearch(pRequest As HIP.Message.HIPRESTRequest, ByRef pResponse As HIP.Message.HIPRESTResponse) As %Status
+{
 	Quit $$$ERROR($$$NotImplemented)
 }
-
-
 
 XData MessageMap
 {

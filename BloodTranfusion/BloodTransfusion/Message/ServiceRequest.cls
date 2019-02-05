@@ -1,13 +1,11 @@
 Class BloodTransfusion.Message.ServiceRequest Extends BloodTransfusion.Message.AbstractBusinessRequest
 {
 
-Property Patient As ODS.Patient;
+Property batchServiceRequest As ODS.BatchServiceRequest;
 
-Property Encounter As ODS.Encounter;
+Property diagnoses As List of ODS.Diagnosis;
 
-Property serviceReuqest As list Of ODS.ServiceRequest;
-
-
+Property batchObservation As ODS.BatchObservation; 
 
 Storage Default
 {
@@ -21,6 +19,33 @@ Storage Default
 </Value>
 <Value name="3">
 <Value>serviceReuqest</Value>
+</Value>
+<Value name="4">
+<Value>BatchServiceRequest</Value>
+</Value>
+<Value name="5">
+<Value>batchServiceRequest</Value>
+</Value>
+<Value name="6">
+<Value>Diagnoses</Value>
+</Value>
+<Value name="7">
+<Value>Observations</Value>
+</Value>
+<Value name="8">
+<Value>diagnoses</Value>
+</Value>
+<Value name="9">
+<Value>dbservations</Value>
+</Value>
+<Value name="10">
+<Value>observations</Value>
+</Value>
+<Value name="11">
+<Value>batchObservations</Value>
+</Value>
+<Value name="12">
+<Value>batchObservation</Value>
 </Value>
 </Data>
 <DefaultData>ServiceRequestDefaultData</DefaultData>

@@ -27,7 +27,7 @@ Property Description As %String(MAXLEN = 1024, XMLNAME = "description", XMLPROJE
 Property Status As ODS.DT.Coding(XMLNAME = "status", XMLPROJECTION = "ELEMENT");
 
 /// 诊断状态历史
-Property StatusHistory As list Of ODS.DT.StatusHistory(XMLNAME = "statusHistory", XMLPROJECTION = "ELEMENT");
+//Property StatusHistory As list Of ODS.DT.StatusHistory(XMLNAME = "statusHistory", XMLPROJECTION = "ELEMENT");
 
 /// 记录时间
 /// When the diagnosed condition began<br>
@@ -37,6 +37,8 @@ Property OnsetTime As %TimeStamp(XMLNAME = "onsetTime", XMLPROJECTION = "ELEMENT
 Property IsPrimary As %Boolean(XMLNAME = "isPrimary", XMLPROJECTION = "ELEMENT") [ InitialExpression = 1 ];
 
 Property Encounter As ODS.Encounter(XMLNAME = "encounter", XMLPROJECTION = "ELEMENT");
+
+Property GroupCode As %String(XMLNAME = "groupCode", XMLPROJECTION = "ELEMENT");
 
 // Index EncounterIndex On Encounter;
 
@@ -75,6 +77,9 @@ Storage Default
 </Value>
 <Value name="11">
 <Value>Role</Value>
+</Value>
+<Value name="12">
+<Value>GroupCode</Value>
 </Value>
 </Data>
 <DataLocation>^ODS.DiagnosisD</DataLocation>

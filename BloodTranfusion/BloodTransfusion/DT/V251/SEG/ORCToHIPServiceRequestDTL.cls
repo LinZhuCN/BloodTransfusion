@@ -12,6 +12,7 @@ XData DTL [ XMLNamespace = "http://www.intersystems.com/dtl" ]
 <transform sourceClass='EnsLib.HL7.Segment' targetClass='ODS.ServiceRequest' sourceDocType='2.5.1:ORC' create='new' language='objectscript' >
 <assign value='source.{PlacerOrderNumber.EntityIdentifier}' property='target.Identifier.Value' action='set' />
 <assign value='source.{FillerOrderNumber}' property='target.Extension.BloodTransfusionExtension.Barcode' action='set' />
+<assign value='source.{PlacerOrderNumber.EntityIdentifier}' property='target.ResourceId' action='set' />
 <assign value='source.{OrderStatus}' property='target.Extension.OrderStatus' action='set' />
 <if condition='"" &apos;= source.{DateTimeofTransaction}' >
 <true>
