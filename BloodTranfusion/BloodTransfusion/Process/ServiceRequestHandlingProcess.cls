@@ -25,8 +25,8 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <property name='iter' type='%Integer' instantiate='0' />
 <property name='batchObsInst' type='ODS.BatchObservation' instantiate='0' />
 </context>
-<sequence xend='200' yend='2750' >
-<switch name='What is the operation' xpos='200' ypos='250' xend='200' yend='2650' >
+<sequence xend='200' yend='2850' >
+<switch name='What is the operation' xpos='200' ypos='250' xend='200' yend='2750' >
 <case condition='"Create" = request.operation' name='Create a Service Request' >
 <call name='ReadPatient' target='ToHIP_REST接口' async='0' xpos='335' ypos='400' >
 <request type='HIP.Message.HIPRESTRequest' >
@@ -71,7 +71,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </sequence>
 </false>
 </if>
-<if name='Save Patient Succeed?' condition='context.tmpFlag' xpos='335' ypos='850' xend='335' yend='2550' >
+<if name='Save Patient Succeed?' condition='context.tmpFlag' xpos='335' ypos='850' xend='335' yend='2650' >
 <true>
 <code name='Save Patient in context' xpos='605' ypos='1000' >
 <![CDATA[ set inst = ""
@@ -123,14 +123,64 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </sequence>
 </false>
 </if>
-<if name='Save Encounter Succeed?' condition='context.tmpFlag' xpos='605' ypos='1550' xend='605' yend='2450' >
+<if name='Save Encounter Succeed?' condition='context.tmpFlag' xpos='605' ypos='1550' xend='605' yend='2550' >
 <true>
 <code name='Save Encounter in context' xpos='875' ypos='1700' >
 <![CDATA[ set inst = ""
  do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(context.callResponse.Payload,"ODS.Encounter",.inst,1)
  set context.entInstance  = inst]]>
 </code>
-<sequence name='BatchSaveServiceRequest' xpos='875' ypos='1800' xend='200' yend='1300' >
+<assign name="ClearIterationIdex" property="context.iter" value="1" action="set" xpos='875' ypos='1800' />
+<foreach name='IterateDiagnosis' property='request.diagnoses' key='context.iter' xpos='875' ypos='1900' xend='200' yend='450' >
+<code name='GetDiagnosisStream' xpos='200' ypos='250' >
+<![CDATA[ set stm = ""
+ Do ##class(%ZEN.Auxiliary.jsonProvider).%WriteJSONStreamFromObject(.stm,request.diagnoses.GetAt(context.iter),,,1,"s")
+ Set context.tStream=##class(%GlobalCharacterStream).%New()
+ Do context.tStream.CopyFrom(stm)
+ ]]>
+</code>
+<call name='SaveDiagnosisToODS' target='ToHIP_REST接口' async='1' xpos='200' ypos='350' >
+<request type='HIP.Message.HIPRESTRequest' >
+<assign property="callrequest.Type" value="&quot;Diagnosis&quot;" action="set" />
+<assign property="callrequest.Operation" value="&quot;Create&quot;" action="set" />
+<assign property="callrequest.Payload" value="context.tStream" action="set" />
+</request>
+<response type='HIP.Message.HIPRESTResponse' >
+<assign property="context.callResponse" value="callresponse" action="set" />
+</response>
+</call>
+</foreach>
+<sequence name='BatchSaveObservation' xpos='875' ypos='2000' xend='200' yend='1100' >
+<assign name="GetBatchObservation" property="context.batchObsInst" value="request.batchObservation" action="set" xpos='200' ypos='250' />
+<assign name="ClearInstEncounter" property="context.batchObsInst.Encounter" value="&quot;&quot;" action="set" xpos='200' ypos='350' />
+<assign name="SetEncounterResourceId" property="context.batchObsInst.Encounter.ResourceId" value="context.entInstance.ResourceId" action="set" xpos='200' ypos='450' />
+<code name='GetInstStream' xpos='200' ypos='550' >
+<![CDATA[ set inst = context.batchObsInst
+ Do ##class(%ZEN.Auxiliary.jsonProvider).%WriteJSONStreamFromObject(.stm,inst,,,1,"s")
+ Set context.tStream=##class(%GlobalCharacterStream).%New()
+ Do context.tStream.CopyFrom(stm)
+ ]]>
+</code>
+<call name='SaveObsToODS' target='ToHIP_REST接口' async='0' xpos='200' ypos='650' >
+<request type='HIP.Message.HIPRESTRequest' >
+<assign property="callrequest.Type" value="&quot;BatchObservation&quot;" action="set" />
+<assign property="callrequest.Operation" value="&quot;Create&quot;" action="set" />
+<assign property="callrequest.Payload" value="context.tStream" action="set" />
+</request>
+<response type='HIP.Message.HIPRESTResponse' >
+<assign property="context.callResponse" value="callresponse" action="set" />
+</response>
+</call>
+<if name='If Batch Save Succeed?' condition='"200" = context.callResponse.Code' xpos='200' ypos='750' xend='200' yend='1000' >
+<true>
+<assign name="set flag as 1" property="context.tmpFlag" value="1" action="set" xpos='470' ypos='900' />
+</true>
+<false>
+<assign name="set flag as 0" property="context.tmpFlag" value="0" action="set" xpos='200' ypos='900' />
+</false>
+</if>
+</sequence>
+<sequence name='BatchSaveServiceRequest' xpos='875' ypos='2100' xend='200' yend='1300' >
 <assign name="GetBatchServiceRequest" property="context.srcReqInstance" value="request.batchServiceRequest" action="set" xpos='200' ypos='250' />
 <assign name="ClearReqPatient" property="context.srcReqInstance.Patient" value="&quot;&quot;" action="set" xpos='200' ypos='350' />
 <assign name="ClearReqEncounter" property="context.srcReqInstance.Encounter" value="&quot;&quot;" action="set" xpos='200' ypos='450' />
@@ -162,61 +212,11 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 </false>
 </if>
 </sequence>
-<if name='Save Batch Request Succeed?' condition='context.tmpFlag' xpos='875' ypos='1900' xend='875' yend='2150' >
+<if name='Save Batch Request Succeed?' condition='context.tmpFlag' xpos='875' ypos='2200' xend='875' yend='2450' >
 <false>
-<trace name='Get BatchRequest Failure SubProcess' value='"TODO: Get BatchRequest Failure SubProcess"' xpos='1010' ypos='2050' />
+<trace name='Get BatchRequest Failure SubProcess' value='"TODO: Get BatchRequest Failure SubProcess"' xpos='1010' ypos='2350' />
 </false>
 </if>
-<assign name="ClearIterationIdex" property="context.iter" value="1" action="set" xpos='875' ypos='2250' />
-<foreach name='IterateDiagnosis' property='request.diagnoses' key='context.iter' xpos='875' ypos='2350' xend='200' yend='450' >
-<code name='GetDiagnosisStream' xpos='200' ypos='250' >
-<![CDATA[ set stm = ""
- Do ##class(%ZEN.Auxiliary.jsonProvider).%WriteJSONStreamFromObject(.stm,request.diagnoses.GetAt(context.iter),,,1,"s")
- Set context.tStream=##class(%GlobalCharacterStream).%New()
- Do context.tStream.CopyFrom(stm)
- ]]>
-</code>
-<call name='SaveDiagnosisToODS' target='ToHIP_REST接口' async='1' xpos='200' ypos='350' >
-<request type='HIP.Message.HIPRESTRequest' >
-<assign property="callrequest.Type" value="&quot;Diagnosis&quot;" action="set" />
-<assign property="callrequest.Operation" value="&quot;Create&quot;" action="set" />
-<assign property="callrequest.Payload" value="context.tStream" action="set" />
-</request>
-<response type='HIP.Message.HIPRESTResponse' >
-<assign property="context.callResponse" value="callresponse" action="set" />
-</response>
-</call>
-</foreach>
-<sequence name='BatchSaveObservation' xpos='1228' ypos='2388' xend='200' yend='1300' >
-<assign name="GetBatchObservation" property="context.batchObsInst" value="request.batchObservation" action="set" xpos='200' ypos='250' />
-<assign name="ClearInstEncounter" property="context.batchObsInst.Encounter" value="&quot;&quot;" action="set" xpos='204' ypos='367' />
-<assign name="SetEncounterResourceId" property="context.batchObsInst.Encounter.ResourceId" value="context.entInstance.ResourceId" action="set" xpos='195' ypos='491' />
-<code name='GetInstStream' xpos='200' ypos='603' >
-<![CDATA[ set inst = context.batchObsInst
- Do ##class(%ZEN.Auxiliary.jsonProvider).%WriteJSONStreamFromObject(.stm,inst,,,1,"s")
- Set context.tStream=##class(%GlobalCharacterStream).%New()
- Do context.tStream.CopyFrom(stm)
- ]]>
-</code>
-<call name='SaveObsToODS' target='ToHIP_REST接口' async='0' xpos='209' ypos='738' >
-<request type='HIP.Message.HIPRESTRequest' >
-<assign property="callrequest.Type" value="&quot;BatchObservation&quot;" action="set" />
-<assign property="callrequest.Operation" value="&quot;Create&quot;" action="set" />
-<assign property="callrequest.Payload" value="context.tStream" action="set" />
-</request>
-<response type='HIP.Message.HIPRESTResponse' >
-<assign property="context.callResponse" value="callresponse" action="set" />
-</response>
-</call>
-<if name='If Batch Save Succeed?' condition='"200" = context.callResponse.Code' xpos='200' ypos='950' xend='200' yend='1200' >
-<true>
-<assign name="set flag as 1" property="context.tmpFlag" value="1" action="set" xpos='470' ypos='1100' />
-</true>
-<false>
-<assign name="set flag as 0" property="context.tmpFlag" value="0" action="set" xpos='200' ypos='1100' />
-</false>
-</if>
-</sequence>
 </true>
 <false>
 <trace name='Get Encounter Failure SubProcess' value='"TODO: Get Encounter Failure SubProcess"' xpos='605' ypos='1700' />

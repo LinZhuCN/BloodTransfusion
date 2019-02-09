@@ -6,7 +6,7 @@ Parameter RESPONSECLASSNAME As %String = "HIP.Message.HIPRESTResponse";
 /// The entity type on which to perform this request
 Property Type As %String(MAXLEN = 128) [ Required ];
 
-/// The operation need to be performed, namely create,delete,update,search and get
+/// The operation need to be performed, namely create,delete,update,search and read
 Property Operation As %String(MAXLEN = 16, VALUELIST = ",Create,Delete,Update,Search,Read,BatchCreate") [ Required ];
 
 /// Query Parameters
@@ -16,7 +16,7 @@ Property Parameters As array Of %List;
 Property Id As %String(MAXLEN = 256);
 
 /// The message payload
-Property Payload As %Library.GlobalCharacterStream;
+Property Payload As %Stream.GlobalCharacter;
 
 Storage Default
 {
