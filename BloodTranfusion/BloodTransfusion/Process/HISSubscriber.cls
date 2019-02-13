@@ -16,7 +16,7 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
 <sequence xend='200' yend='600' >
 <switch name='AsType' xpos='200' ypos='250' xend='200' yend='500' >
 <case condition='"ODS.ServiceRequest" = request.Type' name='IsServiceRequest' >
-<sequence name='HandleServiceRequest' xpos='335' ypos='400' xend='200' yend='650' >
+<sequence name='HandleServiceRequest' xpos='335' ypos='400' xend='200' yend='1000' >
 <call name='ReadServiceRequest' target='ToHIP_REST接口' async='0' xpos='200' ypos='250' >
 <request type='HIP.Message.HIPRESTRequest' >
 <assign property="callrequest.Type" value="&quot;ServiceRequest&quot;" action="set" />
@@ -32,14 +32,8 @@ XData BPL [ XMLNamespace = "http://www.intersystems.com/bpl" ]
  do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(context.tmpResp.Payload, "ODS.ServiceRequest",.inst)
  set context.svcReqInst  = inst]]>
 </code>
-<transform name='GetOMBO27' class='BloodTransfusion.DT.ToHL7.ServiceRequestToOMBO27' source='context.svcReqInst' target='context.HL7Msg' xpos='477' ypos='333' />
-<switch name='AsEvent' xpos='637' ypos='410' xend='466' yend='503' >
-<case condition='"Created" = request.Event' name='IsCreated' >
-<assign name="SetAsCreated" property="context.HL7Msg.{ORCgrp(1).ORC:OrderControl}" value="&quot;NW&quot;" action="set" xpos='852' ypos='498' />
-</case>
-<default name='default' />
-</switch>
-<call name='ToHIS' target='ToHIS_HL7文件接口' async='1' xpos='432' ypos='566' >
+<transform name='GetOMBO27' class='BloodTransfusion.DT.ToHL7.ServiceRequestToOMBO27' source='context.svcReqInst' target='context.HL7Msg' xpos='200' ypos='450' />
+<call name='ToHIS' target='ToHIS_HL7文件接口' async='1' xpos='200' ypos='900' >
 <request type='EnsLib.HL7.Message' >
 <assign property="callrequest" value="context.HL7Msg" action="set" />
 </request>

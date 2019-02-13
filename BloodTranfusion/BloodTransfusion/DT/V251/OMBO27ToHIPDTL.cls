@@ -17,8 +17,15 @@ XData DTL [ XMLNamespace = "http://www.intersystems.com/dtl" ]
 <false>
 <if condition='"CA" = source.{ORCgrp(1).ORC:OrderControl}' >
 <true>
+<assign value='"Delete"' property='target.operation' action='set' />
+</true>
+<false>
+<if condition='"OK" = source.{ORCgrp(1).ORC:OrderControl}' >
+<true>
 <assign value='"Update"' property='target.operation' action='set' />
 </true>
+</if>
+</false>
 </if>
 </false>
 </if>

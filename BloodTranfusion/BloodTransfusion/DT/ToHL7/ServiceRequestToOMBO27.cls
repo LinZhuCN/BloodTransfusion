@@ -15,6 +15,8 @@ XData DTL [ XMLNamespace = "http://www.intersystems.com/dtl" ]
 <subtransform class='BloodTransfusion.DT.ToHL7.SEQ.EncounterToPV1' targetObj='target.{PIDgrp.PV1grp.PV1}' sourceObj='source.Encounter' />
 <subtransform class='BloodTransfusion.DT.ToHL7.SEQ.ServiceRequestToORC' targetObj='target.{ORCgrp(1).ORC}' sourceObj='source' />
 <subtransform class='BloodTransfusion.DT.ToHL7.SEQ.ServiceRequestToBPO' targetObj='target.{ORCgrp(1).BPO}' sourceObj='source' />
+<if condition='"NW" = source.Status.Code' >
+<true>
 <foreach property='source.Notes()' key='k1' >
 <subtransform class='BloodTransfusion.DT.ToHL7.SEQ.NoteToNTE' targetObj='target.{ORCgrp(1).NTE(k1)}' sourceObj='source.Notes.(k1)' />
 </foreach>
@@ -24,6 +26,8 @@ XData DTL [ XMLNamespace = "http://www.intersystems.com/dtl" ]
 <foreach property='source.Encounter.Observations()' key='k3' >
 <subtransform class='BloodTransfusion.DT.ToHL7.SEQ.ObservationToOBX' targetObj='target.{ORCgrp(1).OBXgrp(k3).OBX}' sourceObj='source.Encounter.Observations.(k3)' />
 </foreach>
+</true>
+</if>
 </transform>
 }
 
